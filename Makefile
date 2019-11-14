@@ -1,5 +1,5 @@
 led: gpio_led.c 
-	gcc gpio_led.c -o gpio_led.o
+	gcc gpio_led.c -o gpio_led
 
 all: led
 
