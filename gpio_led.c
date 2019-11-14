@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <time.h>
 
+#define ENABLE_LED_MSG	
+#define GPIOPIN gpio68
+
 void sig_handler(int signo)
 {
     if (signo == SIGINT)
@@ -21,27 +24,31 @@ int main(void) {
         exit(1);
     }
 
-    status = access("/sys/class/gpio/gpio68/value", F_OK );
+    status = access("/sys/class/gpio/GPIOPIN/value", F_OK );
 
     if (status == -1) {
         // file doesn't exist
-        printf("GPIO_68 file doesn't exist. Execute \'echo $GPIO > export\' \
-                in /sys/class/gpio as root where $GPIO = 68\n");
+        printf("GPIOPIN file doesn't exist\n");
         exit(1);
     }
 
-    //Set GPIO 68 as output
-    system("echo out > /sys/class/gpio/gpio68/direction"); 
+    //Set GPIOPIN as output
+    system("echo out > /sys/class/gpio/GPIOPIN/direction"); 
     sleep(1);    
 
     while(1) {
         if (cnt % 2 == 0) {
+		   #ifdef ENABLE_LED_MSG	
            printf("%u) LED --- ON\n", cnt);
-           system("echo 1 > /sys/class/gpio/gpio68/value");
+           printf("Echo ON for GPIOPIN\n");
+		   #endif
+           system("echo 1 > /sys/class/gpio/GPIOPIN/value");
         }
         else {
+		   #ifdef ENABLE_LED_MSG	
            printf("%u) LED --- OFF\n", cnt);
-           system("echo 0 > /sys/class/gpio/gpio68/value");
+		   #endif
+           system("echo 0 > /sys/class/gpio/GPIOPIN/value");
         }
 
         cnt += 1;
